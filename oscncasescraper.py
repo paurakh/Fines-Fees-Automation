@@ -75,6 +75,8 @@ class OSCNCaseScraper:
         fee_table = fee_table[
             (fee_table['docket_code'].isin(['ACCOUNT', 'PAY']))]
 
+        fee_table = fee_table[fee_table['party'].str.lower()==name]
+
         # Extract the dollar amount from the description column using regular expressions
         pattern = r'TOTAL AMOUNT PAID:\s*\$?\s*(\d+\.\d{2})'
         fee_table['amount'] = fee_table['description'].str.extract(pattern)

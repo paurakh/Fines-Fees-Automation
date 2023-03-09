@@ -6,14 +6,12 @@ from oscndocketscraper import OSCNDocketScraper
 from oscncasescraper import OSCNCaseScraper
 
 # Calculate total fees paid
-@st.cache_data
 def calculate_total_fees(df):
     # calculate total fees paid
     total_fees = df['amount'].sum()
     return total_fees
 
 # Calculate number of consecutive months paid
-@st.cache_data
 def calculate_consecutive_months(df):
     # convert the 'date' column to a pandas datetime object
     df['date'] = pd.to_datetime(df['date'])
@@ -53,9 +51,9 @@ def scrape_multiple_cases(url_list, first_name, last_name, middle_name):
         scraper = OSCNCaseScraper(url, first_name, last_name, middle_name)
         try:
             fee_table_list.append(scraper.fee_table)
-            st.write(f"{scraper.case_number} successful")
+            st.write(f"{scraper.case_number}: {len(scraper.fee_table)} results")
         except:
-            st.write(f"{scraper.case_number} failed to load")
+            st.write(f"{scraper.case_number}: 0 results")
 
     # Concatenate the fee tables into one overall fee table
     overall_fee_table = pd.concat(fee_table_list)
@@ -118,6 +116,7 @@ if name_input:
         st.write(fee_tables)
 
         total_fees = calculate_total_fees(fee_tables)
+        total_fees = round(total_fees, 2)
         max_consecutive = calculate_consecutive_months(fee_tables)
 
         st.write("Total Fees Paid: ", total_fees)
